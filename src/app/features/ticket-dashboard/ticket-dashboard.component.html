@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>TechTicket FP</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-segment [value]="filtroActual()" (ionChange)="cambiarFiltro($event)" class="ion-margin-bottom">
+
+    <ion-segment-button value="todos">
+      <ion-label>Todos</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="abiertos">
+      <ion-label>Abiertos</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="cerrados">
+      <ion-label>Cerrados</ion-label>
+    </ion-segment-button>
+
+  </ion-segment>
+
+  @if (ticketService.isLoading()) {
+
+  <div class="ion-text-center ion-margin-top">
+    <ion-spinner name="dots"></ion-spinner>
+    <p>Sincronizando incidencias...</p>
+  </div>
+
+  } @else if (ticketService.errorMessage()) {
+
+  <div class="ion-text-center">
+    <ion-text color="danger">
+      <p>{{ ticketService.errorMessage() }}</p>
+    </ion-text>
+
+    <ion-button (click)="cargarDatos()" size="small">
+      Reintentar
+    </ion-button>
+  </div>
+
+  } @else {
+
+  <ion-list>
+
+    @for (ticket of ticketsFiltrados(); track ticket.id) {
+
+    <ion-item>
+      <ion-label>
+        <h2>#{{ ticket.id }} - {{ ticket.title }}</h2>
+      </ion-label>
+
+      <ion-badge slot="end" [color]="ticket.completed ? 'success' : 'warning'">
+
+        {{ ticket.completed ? 'Resuelto' : 'Pendiente' }}
+
+      </ion-badge>
+    </ion-item>
+
+    } @empty {
+
+    <ion-item>
+      <ion-label class="ion-text-center">
+        No hay incidencias en esta vista.
+      </ion-label>
+    </ion-item>
+
+    }
+
+  </ion-list>
+
+  }
+
+</ion-content>
